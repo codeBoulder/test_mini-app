@@ -8,7 +8,7 @@ async def start(message: types.Message):
         inline_keyboard=[
             [types.InlineKeyboardButton(
                 text="Відкрити сайт 🌐", 
-                url=""
+                url="https://codeboulder.github.io/test_mini-app/"
             )]
         ]
     )

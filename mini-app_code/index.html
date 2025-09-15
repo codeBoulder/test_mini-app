@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Моя перша Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <h1>Привіт з Mini App!</h1>
+  <button onclick="sendData()">Відправити в Telegram</button>
+
+  <script>
+    function sendData() {
+      Telegram.WebApp.sendData("Привіт, це мої перші дані з Mini App!");
+    }
+  </script>
+</body>
+</html>
