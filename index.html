@@ -8,9 +8,6 @@
     <style>
         :root {
             --bg-deep: #050505;
-            --text-pure: #ffffff;
-            --border-subtle: rgba(255, 255, 255, 0.05);
-            /* Темно-червоний колір для пульсації по краях екрана */
             --pulse-color: rgba(139, 0, 0, 0.3); 
         }
 
@@ -18,58 +15,25 @@
             margin: 0;
             padding: 0;
             background-color: var(--bg-deep);
-            color: var(--text-pure);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
+            padding-top: 20px; 
         }
 
-        /* 🔴 Шар для пульсації по всьому периметру екрана */
+        /* Імпульсація по краях екрана */
         .screen-pulse {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none; /* Пропускає кліки і скрол до контенту під ним */
-            z-index: 9999; /* Лежить поверх усього контенту */
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 9999;
             animation: screen-breathing 4s ease-in-out infinite;
         }
 
         @keyframes screen-breathing {
-            0% {
-                box-shadow: inset 0 0 0px rgba(0, 0, 0, 0);
-            }
-            50% {
-                /* inset робить тінь спрямованою всередину від країв екрана */
-                box-shadow: inset 0 0 50px 5px var(--pulse-color);
-            }
-            100% {
-                box-shadow: inset 0 0 0px rgba(0, 0, 0, 0);
-            }
-        }
-
-        /* Шапка: чисте матове скло (пульсацію звідси прибрали) */
-        .header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            width: 100%;
-            padding: 18px 0;
-            background: rgba(5, 5, 5, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border-subtle);
-            text-align: center;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.9);
+            0% { box-shadow: inset 0 0 0px rgba(0, 0, 0, 0); }
+            50% { box-shadow: inset 0 0 50px 5px var(--pulse-color); }
+            100% { box-shadow: inset 0 0 0px rgba(0, 0, 0, 0); }
         }
 
         .content {
@@ -77,23 +41,43 @@
             display: flex;
             justify-content: center;
             padding-bottom: 40px;
+            position: relative;
+            z-index: 10;
         }
 
         img {
             width: 100%;
             height: auto;
             display: block;
-            border-radius: 0 0 12px 12px;
+            border-radius: 12px; 
+        }
+
+        /* Оновлені стилі для іскор */
+        .spark {
+            position: fixed;
+            top: -20px; /* Ховаємо трохи вище екрана перед падінням */
+            background-color: #ff3333;
+            box-shadow: 0 0 4px #ff0000, 0 0 8px #8b0000; 
+            border-radius: 50%;
+            pointer-events: none; 
+            z-index: 9998; 
+        }
+
+        /* Анімація падіння */
+        @keyframes fall {
+            to { transform: translateY(110vh) translateX(20px); }
+        }
+
+        /* Анімація мерехтіння (без transform, лише opacity) */
+        @keyframes blink {
+            0% { opacity: 0.1; }
+            100% { opacity: 1; }
         }
     </style>
 </head>
 <body>
 
 <div class="screen-pulse"></div>
-
-<div class="header">
-    <h1>Bunker</h1>
-</div>
 
 <div class="content">
     <img src="https://codeboulder.github.io/test_mini-app/new%20rules.png" alt="Правила гри">
@@ -102,10 +86,38 @@
 <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
-    
-    // Синхронізація кольорів оболонки Telegram
     tg.setHeaderColor('#050505');
     tg.setBackgroundColor('#050505');
+
+    function createSpark() {
+        const spark = document.createElement('div');
+        spark.classList.add('spark');
+
+        // Рандомна позиція по горизонталі
+        const startX = Math.random() * window.innerWidth;
+        spark.style.left = startX + 'px';
+
+        // Рандомний розмір (дрібні іскри)
+        const size = Math.random() * 2 + 1;
+        spark.style.width = size + 'px';
+        spark.style.height = size + 'px';
+
+        // Рандомна тривалість падіння
+        const fallDuration = Math.random() * 4 + 3;
+        
+        // Запускаємо обидві анімації через JS
+        spark.style.animation = `fall ${fallDuration}s linear forwards, blink 0.5s ease-in-out infinite alternate`;
+
+        document.body.appendChild(spark);
+
+        // Видаляємо іскру після падіння
+        setTimeout(() => {
+            spark.remove();
+        }, fallDuration * 1000);
+    }
+
+    // Створюємо нову іскру кожні 400 мілісекунд
+    setInterval(createSpark, 400);
 </script>
 
 </body>
