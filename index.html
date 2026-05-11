@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BUNKER</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-deep: #050505;
+            --text-pure: #ffffff;
+            --border-subtle: rgba(255, 255, 255, 0.05);
+            /* Темно-червоний колір для пульсації по краях екрана */
+            --pulse-color: rgba(139, 0, 0, 0.3); 
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-deep);
+            color: var(--text-pure);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* 🔴 Шар для пульсації по всьому периметру екрана */
+        .screen-pulse {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none; /* Пропускає кліки і скрол до контенту під ним */
+            z-index: 9999; /* Лежить поверх усього контенту */
+            animation: screen-breathing 4s ease-in-out infinite;
+        }
+
+        @keyframes screen-breathing {
+            0% {
+                box-shadow: inset 0 0 0px rgba(0, 0, 0, 0);
+            }
+            50% {
+                /* inset робить тінь спрямованою всередину від країв екрана */
+                box-shadow: inset 0 0 50px 5px var(--pulse-color);
+            }
+            100% {
+                box-shadow: inset 0 0 0px rgba(0, 0, 0, 0);
+            }
+        }
+
+        /* Шапка: чисте матове скло (пульсацію звідси прибрали) */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            width: 100%;
+            padding: 18px 0;
+            background: rgba(5, 5, 5, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-subtle);
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .content {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding-bottom: 40px;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 0 0 12px 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="screen-pulse"></div>
+
+<div class="header">
+    <h1>Bunker</h1>
+</div>
+
+<div class="content">
+    <img src="https://codeboulder.github.io/test_mini-app/new%20rules.png" alt="Правила гри">
+</div>
+
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+    
+    // Синхронізація кольорів оболонки Telegram
+    tg.setHeaderColor('#050505');
+    tg.setBackgroundColor('#050505');
+</script>
+
+</body>
+</html>
