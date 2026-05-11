@@ -21,7 +21,7 @@
             padding-top: 20px; 
         }
 
-        /* Імпульсація по краях екрана */
+        /* Імпульсація по краях екрана (залишається без змін) */
         .screen-pulse {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -52,26 +52,26 @@
             border-radius: 12px; 
         }
 
-        /* Оновлені стилі для іскор */
+        /* Дрібні атмосферні іскри-попіл */
         .spark {
             position: fixed;
-            top: -20px; /* Ховаємо трохи вище екрана перед падінням */
-            background-color: #ff3333;
-            box-shadow: 0 0 4px #ff0000, 0 0 8px #8b0000; 
+            top: -20px; 
+            background-color: #ff4444;
+            box-shadow: 0 0 5px #ff0000, 0 0 10px #8b0000; 
             border-radius: 50%;
             pointer-events: none; 
             z-index: 9998; 
         }
 
-        /* Анімація падіння */
+        /* Падіння з використанням змінної --drift для відхилення вбік */
         @keyframes fall {
-            to { transform: translateY(110vh) translateX(20px); }
+            to { transform: translateY(110vh) translateX(var(--drift)); }
         }
 
-        /* Анімація мерехтіння (без transform, лише opacity) */
+        /* Дуже повільне і м'яке мерехтіння */
         @keyframes blink {
-            0% { opacity: 0.1; }
-            100% { opacity: 1; }
+            0% { opacity: 0; }
+            100% { opacity: 0.6; } /* Максимальна яскравість знижена, щоб не «било» по очах */
         }
     </style>
 </head>
@@ -93,31 +93,36 @@
         const spark = document.createElement('div');
         spark.classList.add('spark');
 
-        // Рандомна позиція по горизонталі
+        // Стартова позиція
         const startX = Math.random() * window.innerWidth;
         spark.style.left = startX + 'px';
 
-        // Рандомний розмір (дрібні іскри)
-        const size = Math.random() * 2 + 1;
+        // Розмір ще менший (від 0.5 до 2 пікселів)
+        const size = Math.random() * 2 + 0.5;
         spark.style.width = size + 'px';
         spark.style.height = size + 'px';
 
-        // Рандомна тривалість падіння
-        const fallDuration = Math.random() * 4 + 3;
+        // Задаємо випадковий дрейф вліво або вправо (від -50px до +50px)
+        const drift = (Math.random() * 100 - 50) + 'px';
+        spark.style.setProperty('--drift', drift);
+
+        // ДУЖЕ повільне падіння: від 12 до 25 секунд
+        const fallDuration = Math.random() * 13 + 12;
         
-        // Запускаємо обидві анімації через JS
-        spark.style.animation = `fall ${fallDuration}s linear forwards, blink 0.5s ease-in-out infinite alternate`;
+        // Повільне затухання/загоряння: від 2 до 4 секунд на один цикл
+        const blinkDuration = Math.random() * 2 + 2;
+        
+        spark.style.animation = `fall ${fallDuration}s linear forwards, blink ${blinkDuration}s ease-in-out infinite alternate`;
 
         document.body.appendChild(spark);
 
-        // Видаляємо іскру після падіння
         setTimeout(() => {
             spark.remove();
         }, fallDuration * 1000);
     }
 
-    // Створюємо нову іскру кожні 400 мілісекунд
-    setInterval(createSpark, 400);
+    // Створюємо іскри рідше: одну раз на 1.2 секунди
+    setInterval(createSpark, 100);
 </script>
 
 </body>
